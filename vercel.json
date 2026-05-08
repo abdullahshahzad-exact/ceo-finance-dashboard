@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/subiekt/:path*",     "destination": "/api/subiekt/:path*" },
+    { "source": "/gratyfikant/:path*", "destination": "/api/gratyfikant/:path*" },
+    { "source": "/rewizor/:path*",     "destination": "/api/rewizor/:path*" },
+    { "source": "/finance/:path*",     "destination": "/api/finance/:path*" },
+    { "source": "/(.*)",               "destination": "/index.html" }
+  ]
+}

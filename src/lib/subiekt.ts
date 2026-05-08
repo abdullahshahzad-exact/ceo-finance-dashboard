@@ -21,9 +21,19 @@
 
 import { useState, useEffect } from 'react'
 
-const isLocalHost = typeof window !== 'undefined'
-  && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-const BASE = isLocalHost ? '/subiekt' : '/api/subiekt'
+// Force /api/ on Vercel domains, /subiekt only on localhost dev server
+const getBase = () => {
+  if (typeof window === 'undefined') return '/api/subiekt'
+  const host = window.location.hostname
+  const isLocalDev = host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168')
+  const base = isLocalDev ? '/subiekt' : '/api/subiekt'
+  if (typeof window !== 'undefined') {
+    console.debug(`[Subiekt] host=${host}, isLocalDev=${isLocalDev}, base=${base}`)
+  }
+  return base
+}
+
+const BASE = getBase()
 
 type Params = Record<string, string | number | boolean | undefined | null>
 

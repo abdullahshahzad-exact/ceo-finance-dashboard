@@ -6,9 +6,19 @@
 
 import { useState, useEffect } from 'react'
 
-const isLocalHost = typeof window !== 'undefined'
-  && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-const BASE = isLocalHost ? '/rewizor' : '/api/rewizor'
+// Force /api/ on Vercel domains, /rewizor only on localhost dev server
+const getBase = () => {
+  if (typeof window === 'undefined') return '/api/rewizor'
+  const host = window.location.hostname
+  const isLocalDev = host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168')
+  const base = isLocalDev ? '/rewizor' : '/api/rewizor'
+  if (typeof window !== 'undefined') {
+    console.debug(`[Rewizor] host=${host}, isLocalDev=${isLocalDev}, base=${base}`)
+  }
+  return base
+}
+
+const BASE = getBase()
 
 type Params = Record<string, string | number | undefined | null>
 

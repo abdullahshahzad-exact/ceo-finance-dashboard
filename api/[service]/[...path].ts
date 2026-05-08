@@ -50,8 +50,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
+  // TEMPORARY: Hardcode keys for testing
+  const HARDCODED_KEYS: Record<string, string> = {
+    SUBIEKT_API_KEY: 'rida_oQctGm7SAbj7fRFSCzdfFYGMENyUIoZqXkygNq7EJWqYLKpVALYKEIL1obkqZNZyRlEWSLMB988IadHqMvQMvKTkAQX2jRg40I34dqaFJampClYeoAlMAI6T9PRFJFde',
+    GRATYFIKANT_API_KEY: 'rida_C0XbYi7SrPxpVy3qKi65Ou9uYw7YY8hxkHWUFtwK1kvGXTeBHss8bv0nx9uN79N6YapeMF9J0Luc9IVt4eG7otyGVQSLcX33yOn8Rt6GDg8Q9hY6RPHsMh2qSfpUoQia',
+    REWIZOR_API_KEY: 'rida_PiL1FS2Dn5xMRlU9p6M24Y537tWTc2Su5ow3T8sQuVvNmccXVM7g4GCbS46iU2ANnChBB1MQwTYFO0FotmqxvfCCEnaXMoJzGLtOw001IIXv8rg3OTOc5YTEcj2BnLHC',
+    FINANCE_API_KEY: 'rida_Wmw3xVlImfAoaiTzeTb6zRtOoyGrSWXAekXR5Shap0iRAbHtwr0MnpKQ6gjh4I37',
+  }
+
   const baseUrl = process.env[config.urlEnv] || config.defaultUrl
-  const apiKey  = process.env[config.keyEnv]  || ''
+  const apiKey  = HARDCODED_KEYS[config.keyEnv] || process.env[config.keyEnv] || ''
   const path    = pathParts ? '/' + pathParts.join('/') : '/'
 
   // Forward query params (excluding Vercel's internal routing params)

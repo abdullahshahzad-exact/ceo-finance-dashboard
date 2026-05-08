@@ -79,6 +79,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       headers: {
         'x-api-key': apiKey,
         'accept': 'application/json',
+        // Prevent ngrok interstitial HTML pages from being returned to API clients.
+        'ngrok-skip-browser-warning': 'true',
         ...(req.body && req.method !== 'GET' ? { 'content-type': 'application/json' } : {}),
       },
       body: req.body && req.method !== 'GET' ? JSON.stringify(req.body) : undefined,

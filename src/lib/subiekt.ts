@@ -25,6 +25,32 @@ const BASE = '/subiekt'
 
 type Params = Record<string, string | number | boolean | undefined | null>
 
+function preview(text: string, max = 180) {
+  if (!text) return ''
+  const oneLine = text.replace(/\s+/g, ' ').trim()
+  return oneLine.length > max ? `${oneLine.slice(0, max)}...` : oneLine
+}
+
+async function parseJsonOrThrow<T>(res: Response, path: string): Promise<T> {
+  const requestId = res.headers.get('x-proxy-request-id') || 'n/a'
+  const contentType = res.headers.get('content-type') || ''
+  const raw = await res.text()
+
+  if (!res.ok) {
+    throw new Error(`Subiekt API ${res.status}: ${path} [req:${requestId}] ${preview(raw)}`)
+  }
+
+  if (!contentType.includes('application/json')) {
+    throw new Error(`Subiekt API non-JSON response: ${path} [req:${requestId}] ${preview(raw)}`)
+  }
+
+  try {
+    return JSON.parse(raw) as T
+  } catch {
+    throw new Error(`Subiekt API invalid JSON: ${path} [req:${requestId}] ${preview(raw)}`)
+  }
+}
+
 async function get<T>(path: string, params?: Params): Promise<T> {
   const url = new URL(`${BASE}${path}`, window.location.origin)
   if (params) {
@@ -33,8 +59,7 @@ async function get<T>(path: string, params?: Params): Promise<T> {
     })
   }
   const res = await fetch(url.toString())
-  if (!res.ok) throw new Error(`Subiekt API ${res.status}: ${path}`)
-  return res.json()
+  return parseJsonOrThrow<T>(res, path)
 }
 
 async function post<T>(path: string, body: unknown): Promise<T> {
@@ -43,8 +68,7 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
-  if (!res.ok) throw new Error(`Subiekt API ${res.status}: ${path}`)
-  return res.json()
+  return parseJsonOrThrow<T>(res, path)
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────

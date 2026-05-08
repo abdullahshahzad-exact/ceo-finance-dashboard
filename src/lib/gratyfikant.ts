@@ -10,6 +10,32 @@ const BASE = '/gratyfikant'
 
 type Params = Record<string, string | number | undefined | null>
 
+function preview(text: string, max = 180) {
+  if (!text) return ''
+  const oneLine = text.replace(/\s+/g, ' ').trim()
+  return oneLine.length > max ? `${oneLine.slice(0, max)}...` : oneLine
+}
+
+async function parseJsonOrThrow<T>(res: Response, path: string): Promise<T> {
+  const requestId = res.headers.get('x-proxy-request-id') || 'n/a'
+  const contentType = res.headers.get('content-type') || ''
+  const raw = await res.text()
+
+  if (!res.ok) {
+    throw new Error(`Gratyfikant API ${res.status}: ${path} [req:${requestId}] ${preview(raw)}`)
+  }
+
+  if (!contentType.includes('application/json')) {
+    throw new Error(`Gratyfikant API non-JSON response: ${path} [req:${requestId}] ${preview(raw)}`)
+  }
+
+  try {
+    return JSON.parse(raw) as T
+  } catch {
+    throw new Error(`Gratyfikant API invalid JSON: ${path} [req:${requestId}] ${preview(raw)}`)
+  }
+}
+
 async function get<T>(path: string, params?: Params): Promise<T> {
   const url = new URL(`${BASE}${path}`, window.location.origin)
   if (params) {
@@ -17,9 +43,8 @@ async function get<T>(path: string, params?: Params): Promise<T> {
       if (v !== undefined && v !== null) url.searchParams.set(k, String(v))
     })
   }
-  const res = await fetch(url.toString())
-  if (!res.ok) throw new Error(`Gratyfikant API ${res.status}: ${path}`)
-  return res.json()
+  const res = await fetch(url.toString(), { headers: { accept: 'application/json' } })
+  return parseJsonOrThrow<T>(res, path)
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────

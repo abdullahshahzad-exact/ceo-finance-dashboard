@@ -4,6 +4,7 @@
     { "source": "/gratyfikant/:path*", "destination": "/api/gratyfikant/:path*" },
     { "source": "/rewizor/:path*",     "destination": "/api/rewizor/:path*" },
     { "source": "/finance/:path*",     "destination": "/api/finance/:path*" },
+    { "source": "/api/:path*",         "destination": "/api/:path*" },
     { "source": "/(.*)",               "destination": "/index.html" }
   ]
 }

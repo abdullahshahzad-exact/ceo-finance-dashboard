@@ -138,7 +138,7 @@ export default function Payroll() {
               ['2025 Full',       '2025-01-01',        '2025-12-31'],
               ['All time',        '2012-01-01',        today],
             ].map(([l, f, t]) => (
-              <button key={l} onClick={() => { setSalFrom(f); setSalTo(t) }}
+              <button key={l} onClick={() => { setSalFrom(f as string); setSalTo(t as string) }}
                 className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:border-purple-400 hover:text-purple-600 transition-colors">{l}</button>
             ))}
           </div>
@@ -212,7 +212,7 @@ export default function Payroll() {
               [`${thisYear} YTD`, `${thisYear}-01-01`, today],
               ['2025 Full',       '2025-01-01',        '2025-12-31'],
             ].map(([l, f, t]) => (
-              <button key={l} onClick={() => { setExpFrom(f); setExpTo(t) }}
+              <button key={l} onClick={() => { setExpFrom(f as string); setExpTo(t as string) }}
                 className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:border-purple-400 hover:text-purple-600 transition-colors">{l}</button>
             ))}
           </div>

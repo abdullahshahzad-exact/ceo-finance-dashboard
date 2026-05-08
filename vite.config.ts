@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import type { IncomingMessage } from 'http'
 
 export default defineConfig(({ mode }) => {
   // Load all .env vars (no prefix filter) so we can read SUBIEKT_* at config time
@@ -19,7 +20,7 @@ export default defineConfig(({ mode }) => {
   const financePlugin: Plugin = {
     name: 'finance-proxy',
     configureServer(server) {
-      server.middlewares.use(async (req, res, next) => {
+      server.middlewares.use(async (req: IncomingMessage & { url?: string }, res, next) => {
         if (!req.url?.startsWith('/finance/')) return next()
         const path = req.url.replace(/^\/finance/, '')
         try {

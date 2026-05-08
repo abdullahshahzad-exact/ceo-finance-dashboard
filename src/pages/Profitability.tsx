@@ -195,7 +195,7 @@ export default function Profitability() {
           [`${thisYear} YTD`, `${thisYear}-01-01`, today],
           ['2025 Full', '2025-01-01', '2025-12-31'],
         ].map(([l, s, e]) => (
-          <button key={l} onClick={() => { setStartDate(s); setEndDate(e) }}
+          <button key={l} onClick={() => { setStartDate(s as string); setEndDate(e as string) }}
             className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:border-purple-400 hover:text-purple-600 transition-colors">{l}</button>
         ))}
       </div>

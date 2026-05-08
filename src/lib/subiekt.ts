@@ -198,6 +198,42 @@ export const getAverageProfitMargin = (params?: {
   DocumentType?: string
 }) => get<number>('/products/average-profit-margin', params)
 
+function is404ForPath(error: unknown, path: string) {
+  return error instanceof Error && error.message.includes(`Subiekt API 404: ${path}`)
+}
+
+async function getSalesSummaryFromFallbackMetrics(params?: {
+  ProductSymbol?: string
+  DateFrom?: string
+  DateTo?: string
+  DocumentType?: string
+}): Promise<SalesSummary> {
+  const filters = {
+    DateFrom: params?.DateFrom,
+    DateTo: params?.DateTo,
+    DocumentType: params?.DocumentType,
+  }
+
+  const [totalQuantity, totalNetSales, totalGrossSales, averageProfitMarginPercent] = await Promise.all([
+    getTotalUnitsSold(filters),
+    getTotalNetSales({ ...filters, ProductSymbol: params?.ProductSymbol }),
+    getTotalGrossSales({ ...filters, ProductSymbol: params?.ProductSymbol }),
+    getAverageProfitMargin({ ...filters, ProductSymbol: params?.ProductSymbol }),
+  ])
+
+  const totalProfit = Number((totalNetSales * (averageProfitMarginPercent / 100)).toFixed(2))
+  const totalCost = Number((totalNetSales - totalProfit).toFixed(2))
+
+  return {
+    totalQuantity,
+    totalNetSales,
+    totalGrossSales,
+    totalCost,
+    totalProfit,
+    averageProfitMarginPercent,
+  }
+}
+
 /**
  * All key metrics in one call:
  * totalQuantity, totalNetSales, totalGrossSales, totalCost, totalProfit, averageProfitMarginPercent
@@ -208,7 +244,21 @@ export const getSalesSummary = (params?: {
   DateFrom?: string
   DateTo?: string
   DocumentType?: string
-}) => get<SalesSummary>('/products/sales-summary', params)
+}) => (async () => {
+  try {
+    return await get<SalesSummary>('/products/sales-summary', params)
+  } catch (error) {
+    if (!is404ForPath(error, '/products/sales-summary')) throw error
+  }
+
+  try {
+    return await get<SalesSummary>('/sales-summary', params)
+  } catch (error) {
+    if (!is404ForPath(error, '/sales-summary')) throw error
+  }
+
+  return getSalesSummaryFromFallbackMetrics(params)
+})()
 
 /** Sales summary for a specific marketplace (dok_KartaId) */
 export const getMarketplaceSalesSummary = (params?: {

@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment files — NEVER COMMIT THESE
+# .env
+# .env.local
+# .env.development
+# .env.development.local
+# .env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.*
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Next.js
+.next/
+out/
+
+# Build
+dist/
+
+# Misc
+.DS_Store
+*.pem
+*.key
+*.log
+.vercel
+.turbo
+
+# Secrets — never commit
+secrets/
+*.secret

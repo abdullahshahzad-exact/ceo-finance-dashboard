@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { font-family: 'Inter', system-ui, sans-serif; }
+
+body {
+  background-color: #EEF0F8;
+  color: #111827;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #EEF0F8; }
+::-webkit-scrollbar-thumb { background: #C4B5FD; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #7C3AED; }
+
+/* Date inputs */
+input[type="date"] { color-scheme: light; }
+
+/* Chart pill bars */
+.recharts-bar-rectangle path { rx: 4; }

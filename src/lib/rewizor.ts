@@ -6,7 +6,9 @@
 
 import { useState, useEffect } from 'react'
 
-const BASE = '/rewizor'
+const isLocalHost = typeof window !== 'undefined'
+  && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+const BASE = isLocalHost ? '/rewizor' : '/api/rewizor'
 
 type Params = Record<string, string | number | undefined | null>
 
